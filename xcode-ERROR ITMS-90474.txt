@@ -1,0 +1,4 @@
+ios9兼容系列之解决iPad提交报错“iPad Multitasking support requires launch story board in bundle "
+这是因为ios9 iPad 的分屏适配所致
+
+General－> Development Info->IPad  requires full screen勾选上

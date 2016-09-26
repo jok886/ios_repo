@@ -1,0 +1,21 @@
+如何将ipa包安装到设备上呢?
+
+打开iTunes,然后,在菜单栏的－》文件－》选择添加到资料库...,选择已经生成好的ipa文件
+之后就会出现在iTunes中
+点击安装后会变成将要安装，然后选择同步
+
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+获取ipa里面的开发文件
+
+将XX.ipa  的后缀改为.zip
+双击解压
+将.app文件右击显示包内容
+
+
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+将XX.app 拖入itunes  在应用里面再将文件拖到桌面就是XX.ipa
+
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+/Users/macuser/Library/Developer/Xcode/DerivedData/项目名/Build/Products/    .app路径
+
+/Users/macuser/Library/Developer/CoreSimulator/Devices/4B9102C2-04BD-44E8-AD8F-078A65722CCD/data/Containers/Bundle/Application/A4911691-F8DD-497B-AFDF-FAC50A84A55E/MyAVPlayer.app

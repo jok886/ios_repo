@@ -1,0 +1,65 @@
+/***************************************************/
+Behaviors:
+打开Xcode 偏好设置，能看到一个叫Behaviors的选项卡
+
+改变app运行时的Xcode的一些行为。当app因为断点或错误暂停时，我们想要做以下的事情：
+播放声音
+显示debug标签页
+显示debug导航
+调试区域同时显示变量和控制台
+
+/***************************************************/
+Window > Devices：
+
+真机调试的时候 真机连接xcode
+Device Information里面获取保存的照片、数据库文件等
+你可以下载一个包含有documents、libarary和temp文件夹的container，这样就能获取设备上的数据了。选中安装的app Download Container
+
+/***************************************************/
+更新app的显示名称：
+在工程的info.plist里添加一个key就能改变app显示名称了（MagicTown糖果逻辑）。这个key就是Bundle display name。
+
+/***************************************************/
+alcatraz.io(网址)，下载一个非常好用的Xcode包管理器
+
+插件：
+SCXcodeMinimap：这个插件和Sublime Text中的那个看起来像。它能够显示一个编辑器的缩略图，轻松地查看、滚动代码。
+RevealPlugin：如果你使用Reveal的话，这个插件能快速启动Reveal。
+RealmPlugin：Realm的模型对象的模板文件。（译注：Realm是一个面向移动设备的数据库。）
+VVDocumenter-Xcode：帮助你快速生成一个方法的注释。
+AdjustFontSize：当你展示代码时，你可能需要快速放大字体，这个插件能让你通过command+加减号来调整字体大小。
+Lin：为NSLocalizedString显示代码补全。
+
+/***************************************************/
+Command + 点击左键
+Option ＋ 点击左键
+
+/***************************************************/
+assistant editor
+
+/***************************************************/
+创建代码片段
+
+将代码片段拖入到｛｝的区域
+如果需要占位符的话，输入 <#placeholder-name#>  //placeholder-name填你想要的名字或类型
+
+/***************************************************/
+用Chisel改进调试  LLDB对Python插件的支持
+
+Facebook开发了一套LLDB命令来让调试更容易一些
+
+brew update
+brew install chisel
+
+touch .lldbinit
+open .lldbinit 
+将command script import /usr/local/opt/chisel/libexec/fblldb.py复制到文件
+
+
+//ls -a显示隐藏文件
+
+pviews：递归打印key window上的view。
+visualize：在Mac上的预览应用中打开UIImage、CGImageRef、UIView和CALayer。
+show/hide:显示或隐藏指定的view或者layer。
+border/unborder：显示或隐藏view/layer的边框，从而找到它在哪。
+Chisel还有很多命令，在lldb中输入help来查看内建和用户定义的命令。

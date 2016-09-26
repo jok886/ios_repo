@@ -1,0 +1,40 @@
+1.如何快速的查看一段代码的执行时间。
+#define TICK   NSDate *startTime = [NSDate date];
+#define TOCK   NSLog(@"Time: %f", -[startTime timeIntervalSinceNow]); //以当前时间(Now)为基准时间，返回实例保存的时间与当前时间(Now)的时间间隔
+或者
+CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+......
+CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
+NSLog(@"%lf", endTime - startTime);(推荐)
+
+
+2.在使用view的缩放的时候，layer.border.width随着view的放大，会出现锯齿化的问题，解决这个问题需要设置这个属性。
+layer.allowsEdgeAntialiasing = YES;
+
+3.打断点可在Debug Session看到线程执行方法的顺序
+
+4.
+使用标识符__VA_ARGS_来表示多个参数，在宏的名称中则使用(...)
+#define eprintf(...) fprintf (stderr, __VA_ARGS__)  
+eprintf ("%s:%d: ", input_file, lineno)  
+     ==>  fprintf (stderr, "%s:%d: ", input_file, lineno)  
+
+将"##"放在","和参数之间，那么如果参数留空的话，那么"##"前面的","就会删掉，从而防止编译错误。
+#define eprintf(format, ...) fprintf (stderr, format, ##__VA_ARGS__)  
+eprintf ("success!\n")  
+     ==> fprintf(stderr, "success!\n"); 
+
+
+
+#ifdef DEBUG
+#define BackgroundView_DLog(fmt, ...) NSLog((@"BackgroundView.m:%s:%d" fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#define BackgroundView_DLog(...)
+#endif
+
+NSLog(@"viewController.m : %s : %d",__PRETTY_FUNCTION__,__LINE__);
+
+5.
+%s  __FILE__
+%s  __func__
+%d  __LINE__

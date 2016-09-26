@@ -1,0 +1,29 @@
+xcode->preference偏爱   里面的Accounts  Locations经常用到
+
+
+xcode7 真机调试 免费用户（没有申请开发者计划的apple id）  
+
+Accounts添加免费用户账号（Free表示未付费但可免费调试）
+
+选择free账号 view details
+在Signing Identities iOS Development->点击Create  (我觉得是 开发证书 自动安装在钥匙串里)  原来：［要在开发者中心配置下载 然后双击安装］
+xcode:TARGETS->General->Team选择免费账户
+
+点击fix issue自动生成这个包名的Provisioning profiles(注意：一定要连上iphone手机，选择你的iphone   在view details的Provisioning profiles会显示生成的文件) （我觉得是 开发配置文件 在Accounts中选择free账号 view details的Provisioning profiles选择这个包名的文件 －》show in finder－》双击安装） 原来：［要在开发者中心配置下载 然后双击安装］
+
+
+fix issue有时会出现Bundld identifier包名不合法的问题 重新写个规范的包名即可
+
+一个Provisioning Profile文件包含了上述的所有内容：证书、App ID、设备（官方的）
+（个人理解）Provisioning profiles是和这个app包名匹配的 而且 伴有一个有效的签名标识（Signing Identities，即iOS Development开发证书），fix issue主要解决这个问题，就是生成Provisioning profiles（开发配置(描述)文件）
+
+
+xcode安装app后出现process launch failed: Security 解决方案：（app已经安装在ios设备上，但没法打开）
+ios设备选择设置－》通用－》设备管理－》选择你的apple id－》点击信任
+再次点击app图标
+
+
+
+
+
+

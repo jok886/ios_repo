@@ -1,0 +1,10 @@
+钥匙串发现以前的证书显示“此证书的签发者无效”
+
+打开keychain,在系统中找到过期的 Apple World Wide Developer Relation Certification Authority，然后删除它.如果看不到过期的证书，请先在keychain显示菜单下，设置"显示已过期证书"
+
+记得要把系统钥匙串的设置权限打开。
+注意要打开锁的图标
+
+https://developer.apple.com/certificationauthority/AppleWWDRCA.cer下载最新的证书，双击导入
+
+把AppleWWDRCA.cer设置成功后就可以了。查看下你的发布证书是否已经正常了。

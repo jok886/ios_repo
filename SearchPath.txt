@@ -1,0 +1,5 @@
+xcode配置
+
+Search Paths设置：
+$(PROJECT_DIR)表示.xcodeproj所在的目录(工程目录)
+$(SRCROOT)

@@ -1,0 +1,54 @@
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝查看开发者账号何时到期
+1.登录开发者中心 https://developer.apple.com/ ,点击 Member Center
+2. 输入开发者账号秘密
+3. 打开Your Account标签,找到Memberships项,即可查看何时到期
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝itunes 安装ipa  
+打开itunes-点击菜单栏的文件-添加到资料库  然后选择ipa文件  然后选择文件，同步
+
+第三方安装 ios设备需要先越狱
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+Certificate：
+证书是用来给应用程序签名的
+在Xcode Build Setting的Code Signing Identity中，你可以设置用于为代码签名的证书
+
+我们申请一个Certificate之前，需要先申请一个Certificate Signing Request (CSR,包含开发者身份信息和公钥) 文件（也称为本地文件 用mac生成 ），而这个过程中实际上是生成了＃＃＃一对公钥和私钥＃＃＃，保存在你Mac的Keychain（密钥）中。用私钥进行签名，用公钥进行验证
+你只能用私钥来进行签名，所以如果没有了私钥，就意味着你不能进行签名了，所以就无法使用这个证书了，此时你只能revoke之前的证书再申请一个。因此在申请完证书时，最好导出并保存好你的私钥。＃＃＃＃＃当你想与其他人或其他设备共享证书时，把私钥传给它就可以了＃＃＃＃＃。私钥保存在你的Mac中，而苹果生成的Certificate中包含了公钥。当你用自己的私钥对代码签名后，苹果就可以用证书中的公钥来进行验证，确保是你对代码进行了签名，而不是别人冒充你，同时也确保代码的完整性等。
+
+在 KeychainAccess|Keys 中展开创建 CSR 时生成的 Key Pair 中的私钥前面的箭头，可以查看到包含其对应公钥的证书；
+在 Keychain Access|Certificates 中展开安装的证书（ios_development.cer）前面的箭头，可以看到其对应的私钥。
+
+证书主要分为两类：Development和Production
+
+App ID：
+App ID用于标识一个App，App ID应该是和Xcode中的Bundle ID是一致的或者匹配的
+
+
+Device：
+每台设备使用UDID来唯一标识
+
+Provisioning Profile：
+一个Provisioning Profile文件包含了上述的所有内容：证书、App ID、设备。
+Provisioning Profile 决定 Xcode 用哪个证书（公钥）/私钥组合（Key Pair/Signing Identity）来签署应用程序（Signing Product）,并将在应用程序打包时嵌入到 .ipa 包里
+如果我们要打包或者在真机上运行一个应用程序，我们首先需要证书来进行签名，用来标识这个应用程序是合法的、安全的、完整的等等；然后需要指明它的App ID，并且验证Bundle ID是否与其一致；再次，如果是真机调试，需要确认这台设备能否用来运行程序。而Provisioning Profile就把这些信息全部打包在一起，方便我们在调试和发布程序打包时使用，这样我们只要在不同的情况下选择不同的profile文件就可以了。而且这个Provisioning Profile文件会在打包时嵌入.ipa的包里。
+
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝app发布流程 上传到app store＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+build settings->build option->enable bitcode:NO(因为有第三方库不支持bitcode，所以设置no)
+
+1.进入开发者中心
+
+identifiers节点  
+创建App IDs
+notice：xcode中的.plist 文件中的bundle identifier要与上面创建时的包名相同
+
+Provisioning Profiles节点
+创建发布描述文件  Distribution－》App Store－》选择相应的App ID－》选择相应的发布证书（开发者中心的发布证书，公钥）－》取名 XXX_Dis 然后generate(生成) 然后下载 然后双击安装
+
+2.xcode配置描述文件
+TARGETS->Build Settings->Code Signing 			->Provisioning Profile->选择XXX_Dis
+												->Code Signing Identity->（release选项）选择与Provisioning Profiles中配置的发布证书相对应的证书，即mac钥匙串上面的发布证书（iphone Distribution，私钥）
+
+
+3.Archive归档 上传

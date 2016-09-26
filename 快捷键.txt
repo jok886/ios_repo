@@ -1,0 +1,11 @@
+option+command+[ 或 ]  :整行上下移动,可选中多行
+command+右  :移动光标到行尾
+command+shift+右  :选中光标右边的全部内容
+shift+右  :逐字选中右边的字母
+Command + /   :注释/取消注释代码
+Command + [ 或者 ]  :向前或向后缩进代码
+esc  :显示/隐藏自动补全弹出框
+
+全屏和退出全屏 control＋command+F 
+
+有些快捷键默认没有设置，建议你打开Xcode > Preferences > Key Bindings ，根据需要自行修改

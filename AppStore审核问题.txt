@@ -1,0 +1,3 @@
+另外在 iTunes connect 提交新版本的时候，Privacy Policy URL 必须要填写。
+
+Please update your app metadata to include a privacy policy and ensure that the privacy policy URL you provide directs the user to the intended destination.

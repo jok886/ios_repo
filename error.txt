@@ -1,0 +1,18 @@
+真机调试出现error：  Could not find Developer Disk Image
+
+解决：
+//Xcode.app这个是Applications里面的xcode应用程序 想要进入后面的路径可以 显示xcode的包内容即可   当然这个路径可以直接Finder 前往文件夹
+在“/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/DeviceSupport”里列出了支持的设备
+看看里面是否包含当前真机ios系统的 DeveloperDiskImage
+eg： ios9.3  需要9.3的DeveloperDiskImage
+
+
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+iOS真机调试程序，报如下错误信息： failed to get the task for process XXX
+
+解决：
+证书问题 或 Code Signing配置问题
+
+
+
+

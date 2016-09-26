@@ -1,0 +1,3 @@
+在Build Phases中的Compile Sources中加入编译标记
+给ARC项目添加MRC标记（-fno-objc-arc） 即mrc的文件添加-fno-objc-arc编译标记
+给MRC项目添加ARC标记（-fobjc-arc）

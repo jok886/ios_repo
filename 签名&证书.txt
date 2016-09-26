@@ -1,0 +1,130 @@
+xcode7支持普通 Apple 账号进行免证书真机调试
+
+只有拥有开发者账号，才可以申请开发/发布证书及相关配置授权文件，进而在iOS真机上开发调试Apps或发布到App Store  ＃＃＃＃＃
+
+============================App ID:
+Explicit App ID：唯一的App ID，用于唯一标识一个应用程序
+例如“com.apple.garageband”这个App ID，用于标识Bundle Identifier为“com.apple.garageband”的App。
+
+Wildcard App ID：含有通配符的App ID，用于标识一组应用程序
+
+
+============================设备（Device）
+Device就是运行iOS系统用于开发调试App的设备。每台Apple设备使用UDID来唯一标识。
+
+可通过iTunes->Summary或者Xcode->Window->Devices获取iPhone的UDID（identifier）。
+
+============================开发证书（Certificates）
+
+数字证书的概念:
+数字证书就是互联网通讯中标志通讯各方身份信息的一串数字，提供了一种在Internet上验证通信实体身份的方式
+它是由一个由权威机构——CA机构，又称为证书授权中心（Certificate Authority）发行的，人们可以在网上用它来识别对方的身份。
+数字证书是一个经证书授权中心数字签名的包含公开密钥拥有者信息以及公开密钥的文件。最简单的证书包含一个公开密钥、名称以及证书授权中心的数字签名。
+数字证书还有一个重要的特征就是时效性：只在特定的时间段内有效。
+
+iOS（开发）证书:
+iOS证书是用来证明iOS App内容（executable code）的合法性和完整性的数字证书
+对于想安装到真机或发布到AppStore的应用程序（App），只有经过签名验证（Signature Validated）才能确保来源可信，并且保证App内容是完整、未经篡改的。
+
+Development证书用来开发和调试应用程序
+Production主要用来分发应用程序（根据证书种类有不同作用）
+
+iOS（开发）证书的根证书:
+iOS以及Mac OS X系统（在安装Xcode时）将自动安装AppleWWDRCA.cer这个中间证书（Intermediate Certificates），它实际上就是iOS（开发）证书的证书，即根证书（Apple Root Certificate）。
+AppleWWDRCA（Apple Root CA）类似注册管理户籍的公安机关户政管理机构，AppleWWDRCA.cer之于iOS（开发）证书则好比户籍证之于身份证。
+
+
+申请证书（CSR：Certificate Signing Request）:
+可以在缺少证书时通过Xcode Fix Issue自动请求证书，这里通过Keychain证书助理从证书颁发机构请求证书：填写开发账号邮件和常用名称，勾选【存储到磁盘】。
+keychain将生成一个包含开发者身份信息的CSR（Certificate Signing Request）文件；同时，Keychain Access|Keys中将新增一对Public/Private Key Pair
+private key始终保存在Mac OS的Keychain Access中，用于签名（CodeSign）对外发布的App
+public key一般随证书（随Provisioning Profile，随App）散布出去，对App签名进行校验认证。用户必须保护好本地Keychain中的private key，以防伪冒
+
+
+上传CRS文件：
+在Apple开发网站上传该CSR文件来添加证书
+Apple证书颁发机构WWDRCA(Apple Worldwide Developer Relations Certification Authority)将使用private key对CSR中的public key和一些身份信息进行加密签名生成数字证书（ios_development.cer）并记录在案（Apple Member Center）。
+从Apple Member Center网站下载证书到Mac上双击即可安装（当然也可在Xcode中添加开发账号自动同步证书和[生成]配置文件）
+
+证书安装成功后，在KeychainAccess|Keys中展开创建CSR时生成的Key Pair中的私钥前面的箭头，可以查看到包含其对应公钥的证书（Your requested certificate will be the public half of the key pair.）；在Keychain Access|Certificates中展开安装的证书（ios_development.cer）前面的箭头，可以看到其对应的私钥。
+
+Certificate被配置到【Xcode Target|Build Settings|Code Signing|Code Signing Identity】下，下拉选择Identities from Profile "..."（一般先配置Provisioning Profile）
+
+============================供应配置文件（Provisioning Profiles）：
+Provisioning Profile文件包含了内容：证书、App ID和设备。＃＃＃＃＃＃
+
+一个Provisioning Profile对应一个Explicit App ID或Wildcard App ID（一组相同Prefix/Seed的App IDs）。在网站上手动创建一个Provisioning Profile时，
+需要依次指定App ID（单选）、证书（Certificates，可多选）和设备（Devices，可多选）。用户可在网站上删除（Delete）已注册的Provisioning Profiles。
+
+Provisioning Profile决定Xcode用哪个证书（公钥）/私钥组合（Key Pair/Signing Identity）来签署应用程序（Signing Product）,将在应用程序打包时嵌入到.ipa包里。安装应用程序时，Provisioning Profile文件被拷贝到iOS设备中，运行该iOS App的设备也通过它来认证安装的程序。
+如果要打包或者在真机上运行一个APP，一般要经历以下三步：
+首先，需要指明它的App ID，并且验证Bundle ID是否与其一致；
+其次，需要证书对应的私钥来进行签名，用于标识这个APP是合法、安全、完整的；
+然后，如果是真机调试，需要确认这台设备是否授权运行该APP。
+
+Provisioning Profile把这些信息全部打包在一起，方便我们在调试和发布程序打包时使用。这样，只要在不同的情况下选择不同的Provisioning Profile文件就可以了。
+
+Distribution版本的ProvisioningProfile主要用于提交App Store审核，其中不指定开发测试的Devices
+
+Xcode将全部供应配置文件（包括用户手动下载安装的和Xcode自动创建的Team Provisioning Profile）放在目录~/Library/MobileDevice/Provisioning Profiles下。
+
+Provisioning Profile被配置到【XcodeTarget|Build Settings|Code Signing|Provisioning Profile】下，然后在Code Signing Identity下拉可选择Identities from Profile "..."（即Provisioning Profile中包含的Certificates）。
+
+============================开发组供应配置文件（Team Provisioning Profiles）：
+每个Apple开发者账号都对应一个唯一的Team ID
+
+在Xcode中添加Apple Developer Account时，它将与Apple Member Center后台勾兑自动生成iOS Team Provisioning Profile（Managed by Xcode）
+
+Team Provisioning Profile包含一个为Xcode iOS Wildcard App ID(*)生成的iOS Team Provisioning Profile:*（匹配所有应用程序），账户里所有的Development Certificates和Devices都可以使用它在这个team注册的所有设备上调试所有的应用程序（不管bundle identifier是什么）。同时，它还会为开发者自己创建的Wildcard/Explicit App IDs创建对应的iOS Team Provisioning Profile。
+
+============================证书与签名（Certificate& Signature）：
+Xcode中配置的Code Signing Identity（entitlements、certificate）必须与Provisioning Profile匹配，并且配置的Certificate必须在本机Keychain Access中存在对应Public／Private Key Pair，否则编译会报错。
+
+Xcode所在的Mac设备（系统）使用CA证书（WWDRCA.cer）来判断Code Signing Identity中Certificate的合法性：
+若用WWDRCA公钥能成功解密出证书并得到公钥（Public Key）和内容摘要（Signature），证明此证书确乃AppleWWDRCA发布，即证书来源可信；
+再对证书本身使用哈希算法计算摘要，若与上一步得到的摘要一致，则证明此证书未被篡改过，即证书完整。
+
+Code Signing
+每个证书（其实是公钥）对应Key Pair中的私钥会被用来对内容（executable code，resources such as images and nib files aren’t signed）进行数字签名（CodeSign）——使用哈希算法生成内容摘要（digest）。
+Xcode使用指定证书配套的私钥进行签名时需要授权，选择【始终允许】后，以后使用该私钥进行签名便不会再弹出授权确认窗口
+
+Verify Code Signature with Certificate
+上面已经提到，公钥被包含在数字证书里，数字证书又被包含在描述文件(Provisioning File)中，描述文件在应用被安装的时候会被拷贝到iOS设备中。
+第一步，App在Mac／iOS真机上启动时，需要对配置的bundle ID、entitlements和certificate与Provisioning Profile进行匹配校验
+
+第二步，iOS/Mac真机上的ios_development.cer被AppleWWDRCA.cer中的 public key解密校验合法后，获取每个开发证书中可信任的公钥对App的可靠性和完整性进行校验。
+iOS/Mac设备（系统）使用App Provisioning Profile（Code Signing Identity）中的开发证书来判断App的合法性：
+若用证书公钥能成功解密出App（executable code）的内容摘要（Signature），证明此App确乃认证开发者发布，即来源可信；
+再对App（executable code）本身使用哈希算法计算摘要，若与上一步得到的摘要一致，则证明此App（executable code）未被篡改过，即内容完整。
+小结：
+基于Provisioning Profile校验了CodeSign的一致性；
+基于Certificate校验App的可靠性和完整性；
+启动时，真机的device ID（UUID）必须在Provisioning Profile的ProvisionedDevices授权之列。
+
+
+============================在多台机器上共享开发账户/证书：
+1.Xcode导出开发者账号(*.developerprofile)或PKCS12文件(*.p12)
+进入Xcode Preferences|Accounts：
+选中Apple IDs列表中对应Account的的Email，点击+-之后的☸|Export Accounts，可导出包含account/code signing identity/provisioning profiles信息的*.developerprofile（Exporting a Developer Profile）文件供其他机器上的Xcode开发使用（Import该Account）。
+选中右下列表中某行Account Name条目|ViewDetails，可以查看Signing Identities和Provisioning Profiles。
+选中欲导出的Signing Identity条目，点击栏底+之后的☸|Export，必须输入密码，并需授权export key "privateKey" from keychain，将导出Certificates.p12。
+点击左下角的刷新按钮可从Member Center同步该账号下所有的Provisioning Profile到本地。
+选中右击列表中某个Provisioning Profile可以【Show in Finder】到[~/Library/MobileDevice/Provisioning\ Profiles]目录，其中Provisioning Profile的真实名称为$(UUID).mobileprovision，名如"2488109f-ff65-442e-9774-fd50bd6bc827.mobileprovision"，其中<key>Name</key>中为Xcode中看到的描述性别名。
+
+2.Keychain Access导出PKCS12文件(*.p12)
+在Keychain Access|Certificates中选中欲导出的certificate或其下private key，右键Export或者通过菜单File|Export Items导出Certificates.p12——PKCS12 file holds the private key and certificate。
+其他Mac机器上双击Certificates.p12（如有密码需输入密码）即可安装该共享证书。有了共享证书之后，在开发者网站上将欲调试的iOS设备注册到该开发者账号名下，并下载对应证书授权了iOS调试设备的Provisioning Profile文件，方可在iOS真机设备上开发调试。
+
+============================证书配置常见错误：
+1.no such provisioning profile was found
+Xcode Target|Genera|Identity Team下提示"Your build settings specify a provisioning profile with the UUID "xxx",howerver, no such provisioning profile was found."
+Xcode Target|BuildSettings|Code Signing|当前配置的指定UUID的provisioning profile在本地不存在，此时需要更改Provisioning Profile。必要时手动去网站下载或重新生成Provisioning Profile或直接在Xcode中Fix issue予以解决（可能自动生成iOS Team ProvisioningProfile）！
+
+
+2.No identities from profile
+Build Settings|CodeSigning的Provisioning Profile中选择了本地安装的provisioning profile之后，Code Signing Identity中下拉提示No identities from profile “…”or No identities from keychain.
+Xcode配置指定UDID的provisioning profile中的DeveloperCertificates在本地KeyChain中不存在（No identities are available）或不一致（KeyPair中的Private Key丢失），此时需去网站检查ProvisioningProfile中的App ID-Certificate-Device配置是否正确。如果是别人提供的共享账号（*.developerprofile）或共享证书(*.p12)，请确保导出了对应Key Pair中的Private Key。必要时也直接在Xcode中Fix issue予以解决（可能自动生成iOS Team ProvisioningProfile）。
+
+============================团队开发:
+使用这个私钥(mac钥匙串中，一个证书会对应一个私钥)，对代码进行签名，而公钥会附带在mobileprovision文件中，打包进app #####
+既然私钥只有某台电脑生成的，那么团队开发怎么展开呢？  解决方案：“私钥导出”，私钥导出成.p12文件

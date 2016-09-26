@@ -1,0 +1,12 @@
+Alcatraz:   //The package manager for Xcode 插件管理器
+https://github.com/alcatraz/Alcatraz
+编译项目
+重启xcode
+期间选择load bundle
+
+
+通过上面的管理器安装下面插件：    打开xcode->菜单栏window->Package Manager
+VVDocumenter-Xcode  //github:onevcat/VVDocumenter-Xcode
+KSImageNamed    //github:ksuther/KSImageNamed-Xcode
+OMColorSense   //github:omz/ColorSense-for-Xcode
+

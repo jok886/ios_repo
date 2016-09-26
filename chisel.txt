@@ -1,0 +1,37 @@
+通过brew安装
+
+pviews
+这个命令可以递归打印所有的view，并能标示层级，相当于 UIView 的私有辅助方法 [view recursiveDescription] 
+(lldb) pviews view(要查看的view)
+
+
+pvc
+这个命令也是递归打印层级，但是不是view，而是viewController。利用它我们可以对viewController的结构一目了然。 其实苹果在IOS8也默默的添加了 UIViewController 的一个私有辅助方法 [UIViewController _printHierarchy] 同样的效果。
+
+visualize
+这是个很有意思的功能，它可以让你使用Mac的预览打开一个 UIImage, CGImageRef, UIView, 或 CALayer。 这个功能或许可以帮我们用来截图、用来定位一个view的具体内容。 但是在我试用了一下，发现暂时还是只能在模拟器时使用，真机还不行。
+使用简单:
+(lldb) visualize imageView
+
+fv & fvc
+fv 和 fvc 这两个命令是用来通过类名搜索当前内存中存在的view和viewController实例的命令，支持正则搜索
+
+show & hide
+这两个命令用来显示和隐藏一个指定的 UIView . 你甚至不需要Continue Progress. 就可以看到效果。
+
+mask/umask border/unborder
+这两组命令用来标识一个view或layer的位置时用， mask用来在view上覆盖一个半透明的矩形， border可以给view添加边框。但是在我实际使用的过程中mask总是会报错，估计是有bug， 那么mask/unmask 一般不要用好了，用border命令是一样的效果，反正二者的用途都是找到一个对应的view.
+
+2.7 caflush
+这个命令会重新渲染，即可以重新绘制界面， 相当于执行了 [CATransaction flush] 方法，要注意如果在动画过程中执行这个命令，就直接渲染出动画结束的效果。
+当你想在调试界面颜色、坐标之类的时候，可以直接在控制台修改属性，然后caflush就可以看到效果啦，是不是要比改代码，然后重新build省事多了呢。
+例, 其中 $122 即是目标UIView：
+(lldb) p view
+(long) $122 = 140718754142192
+(lldb) e (void)[$122 setBackgroundColor:[UIColor greenColor]]
+(lldb) caflush
+
+
+2.8 bmessage
+这个命令就是用来打断点用的了，虽然大家断点可能都喜欢在图形界面里面打，但是考虑一种情况：我们想在 [MyViewController viewWillAppear:] 里面打断点，但是 MyViewController并没有实现 viewWillAppear: 方法， 以往的作法可能就是在子类中实现下viewWillAppear:，然后打断点，然后rebuild。
+那么幸好有了 bmessage命令。我们可以不用这样就可以打这个效果的断点： (lldb) bmessage -[MyViewController viewWillAppear:] 上面命令会在其父类的 viewWillAppear: 方法中打断点，并添加上了条件：[self isKindOfClass:[MyViewController class]]

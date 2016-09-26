@@ -1,0 +1,21 @@
+每个应用程序都有自己的存储空间，应用程序不能翻过自己的围墙去访问别的存储空间的内容
+其实简单理解每个应用都是其独立的分配空间
+
+NSLog(@"路径:%@",NSHomeDirectory());
+
+Documents目录存储的是程序中创建的或在程序中浏览到的文件数据,Library存储程序的默认设置或其它 状态信息；Library下的Caches目录存放缓存文件，Library下的Preferences目录存放的应用程序的偏好设置，tmp保存的是创建和存放的临时文件
+
+//获取Documents文件夹目录,NSDocumentDirectory获取Doucments文件夹目录，NSUserDomainMask是在当前应用沙盒中获取，所有应用沙盒目录组成一个数组结构的数据存放
+ NSArray *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+ NSLog(@"Documents目录：%@",[documentPath objectAtIndex:0]);
+  
+ //缓存Cache目录
+ NSArray *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+ NSLog(@"缓存目录：%@",[cachePath objectAtIndex:0]);
+  
+ //Library目录
+ NSArray *domainPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+ NSLog(@"资源库目录：%@",[domainPath objectAtIndex:0]);
+  
+ //临时文件temp目录
+ NSLog(@"临时文件目录：%@",NSTemporaryDirectory()); 

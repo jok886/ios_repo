@@ -1,0 +1,17 @@
+Xcode LLDB Debug  
+断点调试
+
+1.断点log不需要重新编译工程  方案列表：
+(1)po或p命令打印对象或变量
+(2)右击断点－》编辑断点  （设置condition 和 action） break at:%B, hit count:%H, i = @i@
+选择automaticlly continue after evalating value，这个可以使得程序不会中断继续执行
+
+1.设置了断点
+
+命令：
+po（print object）是LLDB的一个命令,其主要功能是输出objective-c中对象（objects）的信息
+p（print），其主要功能是输出原生类型（boolean、integer、float、etc）的信息
+2.(lldb) po [m_view recursiveDescription]
+
+技巧一：运行时修改变量的值
+你以前怎么验证是不是某个变量的值导致整段程序不能正常工作？修改代码中的变量的值，然后cmd+r重新启动app？现在你不需要这么做了，只需要设置一个断点，当程序在这进入调试模式后，使用expr命令即可在运行时修改变量的值。

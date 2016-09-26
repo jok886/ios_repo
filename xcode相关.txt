@@ -1,0 +1,1 @@
+xcode:window->device可以看到设备信息  identifier
